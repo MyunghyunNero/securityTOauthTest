@@ -22,15 +22,15 @@ public class SecurityConfig {
     public BCryptPasswordEncoder encoderPwd(){
         return new BCryptPasswordEncoder();
     }
-    @Bean
-    public UserDetailsService userDetailsService() throws Exception {
-        // ensure the passwords are encoded properly
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(users.username("user").password("password").roles("USER").build());
-        manager.createUser(users.username("admin").password("password").roles("USER","ADMIN").build());
-        return manager;
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() throws Exception {
+//        // ensure the passwords are encoded properly
+//        User.UserBuilder users = User.withDefaultPasswordEncoder();
+//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+//        manager.createUser(users.username("user").password("password").roles("USER").build());
+//        manager.createUser(users.username("admin").password("password").roles("USER","ADMIN").build());
+//        return manager;
+//    }
 
     @Bean
     @Order(1)
@@ -38,12 +38,16 @@ public class SecurityConfig {
         http
                 .csrf().disable()//admin만 들어 갈 수 있음
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("").authenticated()
+                        .requestMatchers("/").authenticated()
                         .requestMatchers("/user/**").authenticated()
-                        .requestMatchers("/manager/**").hasRole("admin")
+                        .requestMatchers("/admin/**").hasRole("admin")
                         .anyRequest().permitAll()
                 )
                 .formLogin()
-                .loginPage("/login");
+                .loginPage("/loginForm")
+                .loginProcessingUrl("/login") //로그인 주소가 호출이 되면 시큐리티가 낚아채서 로그인 진행
+                .defaultSuccessUrl("/");
 
 
         return http.build();

@@ -48,11 +48,11 @@ public class IndexController {
         user.setPassword(encPassword);
         userRepository.save(user);  //비밀번호 암호화 과정 필요
         System.out.println(user);
-        return "redirect:/login";
+        return "redirect:/loginForm";
     }
 
-    @GetMapping("/login")
-    public String login(){
+    @GetMapping("/loginForm")
+    public String loginForm(){
         return "loginform";
     }
 }
