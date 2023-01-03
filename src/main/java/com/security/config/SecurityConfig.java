@@ -29,21 +29,28 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/admin/**")        //admin만 들어 갈 수 있음
+                .csrf().disable()//admin만 들어 갈 수 있음
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().hasRole("ADMIN")
+                        .requestMatchers("/user/**").authenticated()
+                        .requestMatchers("/manager/**").hasRole("admin")
+                        .anyRequest().permitAll()
                 )
-                .httpBasic(withDefaults());
+                .formLogin()
+                .loginPage("/login");
+
+
         return http.build();
     }
 
-    @Bean
-    public SecurityFilterChain formLoginFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().authenticated()
-                )
-                .formLogin(withDefaults());
-        return http.build();
-    }
+//    @Bean
+//    public SecurityFilterChain formLoginFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf().disable()
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .anyRequest().authenticated()
+//                )
+//                .formLogin()
+//                .loginPage("/login");
+//        return http.build();
+//    }
 }
