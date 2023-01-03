@@ -41,13 +41,16 @@ public class SecurityConfig {
                         .requestMatchers("").authenticated()
                         .requestMatchers("/").authenticated()
                         .requestMatchers("/user/**").authenticated()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")  //시큐리티는 role변수에 ROLE_* 규칙으로 적어야함 그리고 hasRole()에는 ROLE_뺴고 뒤에 적어야함
+                        .requestMatchers("/admin/**").hasRole("ADMIN")  //시큐리티는 role변수에 ROLE_* 규칙으로 적어야함 그리고 hasRole()에는 ROLE_뺴고 뒤에 적어야
                         .anyRequest().permitAll()
                 )
                 .formLogin()
                 .loginPage("/loginForm")
                 .loginProcessingUrl("/login") //로그인 주소가 호출이 되면 시큐리티가 낚아채서 로그인 진행
-                .defaultSuccessUrl("/");
+                .defaultSuccessUrl("/")
+                .and()
+                .oauth2Login()
+                .loginPage("/loginForm");//구글 로그인 후처리 필요;
 
 
         return http.build();
