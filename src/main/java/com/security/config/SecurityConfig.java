@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("").authenticated()
                         .requestMatchers("/").authenticated()
                         .requestMatchers("/user/**").authenticated()
-                        .requestMatchers("/admin/**").hasRole("admin")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")  //시큐리티는 role변수에 ROLE_* 규칙으로 적어야함 그리고 hasRole()에는 ROLE_뺴고 뒤에 적어야함
                         .anyRequest().permitAll()
                 )
                 .formLogin()
