@@ -1,5 +1,7 @@
 package com.security.config;
 
+import com.security.oauth.PrincipalOauthUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -12,25 +14,18 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-
+//1.코드받(인증) 2. 엑세스토(권한)
+//3.사용자 프로필 가져오기 4-1.그 정보 토대로 회원가입 진행
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-
+    @Autowired
+    private PrincipalOauthUserService principalOauthUserService;
     @Bean  //해당 메서의 리턴되는 오브젝트를 ioc로 등록해준다
     public BCryptPasswordEncoder encoderPwd(){
         return new BCryptPasswordEncoder();
     }
-//    @Bean
-//    public UserDetailsService userDetailsService() throws Exception {
-//        // ensure the passwords are encoded properly
-//        User.UserBuilder users = User.withDefaultPasswordEncoder();
-//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-//        manager.createUser(users.username("user").password("password").roles("USER").build());
-//        manager.createUser(users.username("admin").password("password").roles("USER","ADMIN").build());
-//        return manager;
-//    }
 
     @Bean
     @Order(1)
@@ -50,7 +45,9 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/")
                 .and()
                 .oauth2Login()
-                .loginPage("/loginForm");//구글 로그인 후처리 필요;
+                .loginPage("/loginForm")
+                .userInfoEndpoint()
+                .userService(principalOauthUserService);//구글 로그인 후처리 필요;
 
 
         return http.build();
