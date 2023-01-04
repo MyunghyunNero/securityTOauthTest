@@ -49,9 +49,12 @@ public class IndexController {
         return "index";
     }
 
+
+    //Aouth , 일반 로그인 둘다 가능 이유: principalDetail 에 UserDetails,OAuth2User 둘 다 상속 받았기 때문 -> 훨씬 편리
     @GetMapping("/user")
     @ResponseBody
-    public String user(){
+    public String user(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        System.out.println("principal : " + principalDetails.getUsername());
         return "user";
     }
 
